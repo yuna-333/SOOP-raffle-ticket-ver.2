@@ -2,100 +2,248 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>[이비디자인] 은지빵님 뽑기판</title>
+    <title>[이비디자인] 100칸 방송용 뽑기판</title>
     <style>
+
         @font-face {
             font-family: 'NexonLv1Gothic';
             src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
-            font-weight: normal; font-display: swap;
+            font-weight: normal;
+            font-display: swap;
         }
+
         @font-face {
             font-family: 'GMarketSans';
             src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
-            font-weight: 500; font-display: swap;
+            font-weight: 500;
+            font-display: swap;
         }
+
         * { box-sizing: border-box; }
-        body { background-color: rgba(0,0,0,0); color: white; font-family: 'NexonLv1Gothic', sans-serif; display: flex; justify-content: flex-start; align-items: flex-start; height: 100vh; margin: 0; padding-top: 60px; padding-left: 20px; overflow: hidden; }
-        .main-container { display: flex; flex-direction: row; background: rgba(0,0,0,0); padding: 10px; border-radius: 20px; align-items: flex-start; gap: 15px; }
-        .view-column { display: flex; flex-direction: column; width: 250px; align-items: center; gap: 6px; }
-        .collapsible-wrapper { width: 100%; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.4s ease; transform-origin: top center; opacity: 1; transform: scaleY(1); }
-        .collapsible-wrapper.collapsed { max-height: 0 !important; opacity: 0; transform: scaleY(0); pointer-events: none; margin-bottom: -6px; }
-        .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; width: 250px; height: 250px; flex-shrink: 0; }
-        .toggle-bar-horizontal { display: flex; justify-content: center; align-items: center; width: 100%; height: 12px; z-index: 10; }
-        .toggle-btn-horiz { width: 250px; height: 14px; background: linear-gradient(180deg, #ffffffbf, #e1d5f2bf); border: 0px solid #9b59b6bf; border-radius: 4px; color: #FFFFFF; cursor: pointer; font-size: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(155, 89, 182, 0.2); transition: all 0.2s ease; }
+
+        body { 
+            background-color: rgba(0,0,0,0);
+            color: white; 
+            font-family: 'NexonLv1Gothic', 'Malgun Gothic', sans-serif; 
+            font-weight: normal; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: flex-start; 
+            height: 100vh; 
+            margin: 0; 
+            padding-top: 60px;
+            padding-left: 20px;
+            overflow: hidden; 
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: row; 
+            background: rgba(0,0,0,0);
+            padding: 10px;
+            border-radius: 20px;
+            align-items: flex-start; 
+            gap: 15px;
+        }
+
+        /* 뷰 영역 (리스트 + 숫자판) */
+        .view-column {
+            display: flex;
+            flex-direction: column;
+            width: 260px;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 공통 접기 애니메이션 컨테이너 */
+        .collapsible-wrapper {
+            width: 100%;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.4s ease;
+            transform-origin: top center;
+            opacity: 1;
+            transform: scaleY(1);
+        }
+        .collapsible-wrapper.collapsed {
+            max-height: 0 !important;
+            opacity: 0;
+            transform: scaleY(0);
+            pointer-events: none;
+            margin-bottom: -6px; /* 애니메이션 여백 제거 */
+        }
+
+        /* 숫자판 (가로 세로 260px 비율) */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 1px; 
+            width: 260px; 
+            height: 260px;
+            flex-shrink: 0;
+        }
+
+        /* 상하 접기 버튼 스타일 (숫자판용) */
+        .toggle-bar-horizontal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 12px;
+            z-index: 10;
+        }
+        .toggle-btn-horiz {
+            width: 260px;
+            height: 14px; 
+            background: linear-gradient(180deg, #ffffffbf, #d7bde2bf);
+            border: 0px solid #9b59b6bf;
+            border-radius: 4px;
+            color: #FFFFFF;
+            cursor: pointer;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(155, 89, 182, 0.2);
+            transition: all 0.2s ease;
+            user-select: none;
+            padding: 0;
+            line-height: 1;
+        }
         .toggle-btn-horiz:hover { background: #9b59b6; color: white; }
+
+        /* 좌우 접기 버튼 스타일 (설정창용) */
         .toggle-bar-container { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; height: 320px; width: 12px; margin-right: 8px; flex-shrink: 0; }
-        .toggle-btn { width: 12px; height: 30px; background: linear-gradient(180deg, #FFFFFF, #e1d5f2); border: 1px solid #9b59b6; border-radius: 4px; color: #5d2e7a; cursor: pointer; font-size: 7px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(155, 89, 182, 0.2); transition: all 0.2s ease; }
+        .toggle-btn { width: 12px; height: 30px; background: linear-gradient(180deg, #FFFFFF, #d7bde2); border: 1px solid #9b59b6; border-radius: 4px; color: #4a235a; cursor: pointer; font-size: 7px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(155, 89, 182, 0.2); transition: all 0.2s ease; user-select: none; padding: 0; }
         .toggle-btn:hover { background: #9b59b6; color: white; }
+
         .card-container { perspective: 1000px; width: 100%; height: 100%; cursor: pointer; user-select: none; }
         .card { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; transform-origin: center center; }
         .card.flipped { transform: rotateY(180deg); }
-        .card-face { position: absolute; width: 100%; height: 100%; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 12px; backface-visibility: hidden; border: 1px solid transparent; font-family: 'GMarketSans', sans-serif; top: 0; left: 0; }
-        .card-front { background: linear-gradient(135deg, #FFFFFF, #f4ecf7); box-shadow: inset 0 0 4px rgba(255, 255, 255, 1), 0 0 3px rgba(155, 89, 182, 0.4); border-color: rgba(155, 89, 182, 0.6); color: #8e44ad; position: relative; overflow: hidden; font-weight: bold; }
+        
+        /* 💡 폰트 특성상 시각적 정중앙을 맞추기 위해 padding-top: 2px; 추가 */
+        .card-face { position: absolute; width: 100%; height: 100%; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 12px; backface-visibility: hidden; border: 1px solid transparent; font-family: 'GMarketSans', sans-serif; top: 0; left: 0; padding-top: 2px; }
+        
+        .card-front { background: linear-gradient(135deg, #FFFFFF, #dabaff); box-shadow: inset 0 0 4px rgba(255, 255, 255, 1), 0 0 3px rgba(155, 89, 182, 0.4); border-color: rgba(155, 89, 182, 0.6); color: #5b2c6f; text-shadow: 0 0 3px #fff, 0 0 3px #fff; position: relative; overflow: hidden; font-weight: bold; }
         .card-front::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, rgba(155,89,182,0) 30%, rgba(255,255,255,0.9) 50%, rgba(155,89,182,0) 70%); transform: rotate(45deg) translate(-150%, -150%); transition: none; pointer-events: none; }
         .card.slot-glow .card-front::after { animation: rapid-slot-light 0.4s linear infinite; }
         @keyframes rapid-slot-light { 0% { transform: rotate(45deg) translate(-100%, -100%); } 100% { transform: rotate(45deg) translate(100%, 100%); } }
+        
         .card-back { transform: rotateY(180deg); text-align: center; display: flex; justify-content: center; align-items: center; font-size: 11px; white-space: nowrap; letter-spacing: -0.5px; text-shadow: 0 0 2px rgba(255, 255, 255, 0.5); }
-        .sidebar { width: 250px; background: linear-gradient(135deg, #FFFFFF, #f4ecf7); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(155, 89, 182, 0.15); height: fit-content; margin-bottom: 5px; }
-        .all-flip-btn { position: relative; width: 100%; height: 38px; padding: 0; background: linear-gradient(135deg, #f4ecf7, #d7bde2); color: #5d2e7a; border: 1px solid #9b59b6; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: 'GMarketSans', sans-serif; display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease, background 0.2s ease; overflow: hidden; font-weight: bold; }
+
+        .sidebar { width: 260px; background: linear-gradient(135deg, #FFFFFF, #f4ecf7); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(155, 89, 182, 0.15); height: fit-content; margin-bottom: 5px; }
+
+        .all-flip-btn { position: relative; width: 100%; height: 38px; padding: 0; background: linear-gradient(135deg, #f5eef8, #ebdef0); color: #4a235a; border: 1px solid #9b59b6; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: 'GMarketSans', sans-serif; display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease, background 0.2s ease; overflow: hidden; font-weight: bold; }
         .all-flip-btn .btn-text { position: relative; z-index: 3; }
         .all-flip-btn::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shimmer-glow 3.5s ease-in-out infinite; z-index: 2; }
         .all-flip-btn:hover { transform: translateY(-1px); background: linear-gradient(135deg, #d7bde2, #9b59b6); color: white; }
         .all-flip-btn:active { transform: translateY(1px); }
         @keyframes shimmer-glow { 0% { left: -150%; } 25% { left: 150%; } 100% { left: 150%; } }
-        .prize-header { display: flex; justify-content: center; align-items: center; padding-bottom: 3px; margin: 0; min-height: 40px; }
-        .prize-title { font-family: 'GMarketSans', sans-serif; font-size: 24px; color: #8e44ad; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 8px #d7bde2; margin: 0; font-weight: bold; }
+
+        .prize-header { display: flex; justify-content: center; align-items: center; border-bottom: 0px dashed #9b59b6; padding-bottom: 3px; margin: 0; min-height: 40px;}
+        .prize-title { font-family: 'GMarketSans', sans-serif; font-size: 24px; color: #6c3483; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 8px #b39ddb; margin: 0; font-weight: bold; }
         .prize-banner-img { width: 120%; max-width: 240px; max-height: 100px; object-fit: contain; display: none; }
-        .marquee-board { background: #f4ecf7; padding: 4px 6px; border-radius: 6px; border: 1px solid #d7bde2; overflow: hidden; position: relative; display: flex; align-items: center; height: 24px; box-shadow: inset 0 0 4px rgba(155, 89, 182, 0.05); }
-        .marquee-content { display: inline-block; white-space: nowrap; padding-left: 100%; font-family: 'NexonLv1Gothic', sans-serif; font-size: 11px; color: #8e44ad; font-weight: bold; animation: marquee-move 12s linear infinite; }
-        .marquee-animate { animation: marquee-move 12s linear infinite; }
-        @keyframes marquee-move { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .status-board { background: #fdf2f9; padding: 6px 8px; border-radius: 8px; border: 2px solid #d7bde2; text-align: center; box-shadow: inset 0 0 8px rgba(155, 89, 182, 0.1); }
-        .status-title { font-family: 'GMarketSans', sans-serif; font-size: 11px; color: #8e44ad; font-weight: bold; margin-bottom: 2px; }
-        .status-text { font-family: 'GMarketSans', sans-serif; font-size: 16px; color: #5d2e7a; font-weight: bold; text-shadow: 0 0 2px #fff, 0 0 2px #fff; }
-        .random-pick-btn { flex: 1; background: linear-gradient(135deg, #f4ecf7, #d7bde2); color: #5d2e7a; border: 1px solid #9b59b6; padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: 'GMarketSans', sans-serif; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(155, 89, 182, 0.1); }
+
+        .marquee-board {
+            background: #f4ecf7;
+            padding: 4px 6px;
+            border-radius: 6px;
+            border: 1px solid #d7bde2;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 24px;
+            box-shadow: inset 0 0 4px rgba(155, 89, 182, 0.05);
+        }
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            font-family: 'NexonLv1Gothic', sans-serif;
+            font-size: 11px;
+            color: #5b2c6f;
+            font-weight: bold;
+            animation: marquee-speed 10s linear infinite;
+        }
+        @keyframes marquee-item {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        .marquee-animate {
+            animation: marquee-move 12s linear infinite;
+        }
+        @keyframes marquee-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .status-board { background: #f5eef8; padding: 6px 8px; border-radius: 8px; border: 2px solid #d7bde2; text-align: center; box-shadow: inset 0 0 8px rgba(155, 89, 182, 0.1); }
+        .status-title { font-family: 'GMarketSans', sans-serif; font-size: 11px; color: #6c3483; font-weight: bold; margin-bottom: 2px; }
+        .status-text { font-family: 'GMarketSans', sans-serif; font-size: 16px; color: #4a235a; font-weight: bold; text-shadow: 0 0 2px #fff, 0 0 2px #fff; }
+
+        .random-pick-btn { flex: 1; background: linear-gradient(135deg, #f4ecf7, #ebdef0); color: #4a235a; border: 1px solid #9b59b6; padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: 'GMarketSans', sans-serif; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(155, 89, 182, 0.1); }
         .random-pick-btn:hover { background: linear-gradient(135deg, #d7bde2, #9b59b6); color: white; transform: translateY(-1px); }
         .random-pick-btn:active { transform: translateY(1px); }
+
         .action-toggle-text { text-align: center; color: #9b59b6; font-size: 8px; font-weight: bold; cursor: pointer; margin-top: 0px; margin-bottom: -10px; left:30px; user-select: none; transition: color 0.2s; font-family: 'NexonLv1Gothic', sans-serif; }
-        .action-toggle-text:hover { color: #8e44ad; }
+        .action-toggle-text:hover { color: #5b2c6f; }
+
         .panel-group#rightPanel { display: flex; flex-direction: row; align-items: flex-start; }
-        .admin-wrapper { width: 250px; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease; opacity: 1; overflow: hidden; flex-shrink: 0; }
+        .admin-wrapper { width: 260px; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease; opacity: 1; overflow: hidden; flex-shrink: 0; }
         .admin-wrapper.collapsed { width: 0px; opacity: 0; transform: scaleX(0); pointer-events: none; }
-        #mainContainer.admin-swapped .admin-wrapper.collapsed { width: 250px; }
-        .admin-answer-section { width: 250px; background: linear-gradient(135deg, rgba(255,255,255,0.95), #fdf2f9); padding: 15px; border-radius: 12px; border: 1px dashed #9b59b6; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 0 15px rgba(155, 89, 182, 0.2); font-family: 'NexonLv1Gothic', 'Malgun Gothic', sans-serif; position: relative; }
-        .answer-title { font-size: 14px; color: #5d2e7a; margin: 0; text-align: center; line-height: 1.4; border-bottom: 1px solid rgba(155, 89, 182, 0.3); padding-bottom: 5px; font-weight: bold; }
-        .opacity-control-box { background: rgba(255, 255, 255, 0.8); padding: 8px; border-radius: 8px; border: 1px solid #d7bde2; margin-bottom: 2px; }
-        .opacity-control-box label { display: flex; justify-content: space-between; font-size: 12px; color: #5d2e7a; margin-bottom: 4px; font-weight: bold; }
-        .opacity-slider { width: 100%; -webkit-appearance: none; background: #fdf2f9; height: 6px; border-radius: 3px; outline: none; cursor: pointer; border: 1px solid #d7bde2; }
+        #mainContainer.admin-swapped .admin-wrapper.collapsed { width: 260px; }
+
+        .admin-answer-section { width: 260px; background: linear-gradient(135deg, rgba(255,255,255,0.95), #f5eef8); padding: 15px; border-radius: 12px; border: 1px dashed #9b59b6; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 0 15px rgba(155, 89, 182, 0.2); font-family: 'NexonLv1Gothic', 'Malgun Gothic', sans-serif; position: relative; }
+        
+        .answer-title { font-size: 14px; color: #4a235a; margin: 0; text-align: center; line-height: 1.4; border-bottom: 1px solid rgba(155, 89, 182, 0.3); padding-bottom: 5px; font-weight: bold; }
+        .opacity-control-box { background: rgba(255, 255, 255, 0.8); padding: 8px; border-radius: 8px; border: 1px solid #c39bd3; margin-bottom: 2px; }
+        .opacity-control-box label { display: flex; justify-content: space-between; font-size: 12px; color: #4a235a; margin-bottom: 4px; font-weight: bold; }
+        .opacity-slider { width: 100%; -webkit-appearance: none; background: #f5eef8; height: 6px; border-radius: 3px; outline: none; cursor: pointer; border: 1px solid #c39bd3; }
         .opacity-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #9b59b6; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        .settings-toggle-btn { width: 100%; background: #fdf2f9; color: #5d2e7a; border: 1px dashed #d7bde2; padding: 6px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'NexonLv1Gothic', sans-serif; font-weight: bold; transition: all 0.2s ease; margin-bottom: 4px; }
-        .settings-toggle-btn:hover { background: #e1d5f2; border-style: solid; }
-        .admin-section-inner h5 { margin: 0 0 6px 0; color: #5d2e7a; font-size: 13px; font-weight: bold; }
+        
+        .settings-toggle-btn { width: 100%; background: #f5eef8; color: #4a235a; border: 1px dashed #c39bd3; padding: 6px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'NexonLv1Gothic', sans-serif; font-weight: bold; transition: all 0.2s ease; margin-bottom: 4px; }
+        .settings-toggle-btn:hover { background: #d7bde2; border-style: solid; }
+
+        .admin-section-inner h5 { margin: 0 0 6px 0; color: #4a235a; font-size: 13px; font-weight: bold; }
         .input-group { display: flex; gap: 4px; margin-bottom: 6px; width: 100%; }
-        .input-bar { flex: 1; min-width: 0; background: #ffffff; color: #5d2e7a; border: 1px solid #d7bde2; border-radius: 6px; padding: 6px; font-size: 13px; font-family: 'NexonLv1Gothic', sans-serif; }
-        .input-bar::placeholder { color: #d7bde2; }
+        .input-bar { flex: 1; min-width: 0; background: #ffffff; color: #4a235a; border: 1px solid #c39bd3; border-radius: 6px; padding: 6px; font-size: 13px; font-family: 'NexonLv1Gothic', sans-serif; }
+        .input-bar::placeholder { color: #c39bd3; }
+        .input-bar[type="file"] { padding: 3px; font-size: 11px; cursor: pointer; }
+        
         .preset-btn { width: 100%; background: linear-gradient(135deg, #F8F9FA, #E9ECEF); color: #495057; border: 1px solid #CED4DA; padding: 7px; border-radius: 6px; margin-bottom: 6px; transition: 0.2s; font-family: 'NexonLv1Gothic', sans-serif; font-weight: bold; cursor: pointer; }
-        .title-toggle-btn { background: linear-gradient(135deg, #fdf2f9, #e1d5f2); color: #5d2e7a; border: 1px solid #d7bde2; }
-        .shuffle-btn { width: 100%; background: linear-gradient(180deg, #9b59b6, #7d3c98); color: white; text-shadow: 0 0 5px rgba(0,0,0,0.3); border: 1px solid #5d2e7a; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-family: 'NexonLv1Gothic', sans-serif; font-weight: bold; cursor: pointer;}
-        .answer-grid { display: flex; flex-direction: column; gap: 5px; height: auto; font-size: 13px; color: #5d2e7a; margin-top: 5px; border-top: 1px dashed rgba(155, 89, 182, 0.5); padding-top: 8px; }
+        .preset-btn:hover { background: #DEE2E6; }
+        .title-toggle-btn { background: linear-gradient(135deg, #f5eef8, #d7bde2); color: #4a235a; border: 1px solid #c39bd3; margin-bottom: 0; }
+        .title-toggle-btn:hover { background: #c39bd3; color: white;}
+        
+        .shuffle-btn { width: 100%; background: linear-gradient(180deg, #9b59b6, #7e57c2); color: white; text-shadow: 0 0 5px rgba(0,0,0,0.3); border: 1px solid #6c3483; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-family: 'NexonLv1Gothic', sans-serif; font-weight: bold; cursor: pointer;}
+        .shuffle-btn:hover { background: linear-gradient(180deg, #d7bde2, #9b59b6); color: #4a235a; text-shadow: none; }
+        
+        .answer-grid { display: flex; flex-direction: column; gap: 5px; height: auto; font-size: 13px; color: #4a235a; margin-top: 5px; border-top: 1px dashed rgba(155, 89, 182, 0.5); padding-top: 8px; }
         .ans-num { color: #ffffff; background: #9b59b6; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin: 2px;}
+
     </style>
 </head>
 <body>
+
 <div class="main-container" id="mainContainer">
+    
     <div class="view-column broadcast-part" id="viewColumn" style="order: 1;">
+        
         <div class="sidebar">
             <div class="prize-header" id="prizeHeader">
                 <h3 class="prize-title" id="textTitle">💜50개 뽑기판💜</h3>
                 <img id="imageTitle" class="prize-banner-img" src="" alt="타이틀 배너">
             </div>
+            
             <div class="marquee-board">
                 <div class="marquee-content marquee-animate" id="marqueeText">문구를 입력해 주세요.</div>
             </div>
+
             <div class="status-board">
                 <div class="status-title">🎈남은 당첨 갯수</div>
                 <div class="status-text" id="statusText">남은 당첨: 0 / 0</div>
             </div>
+            
             <div class="collapsible-wrapper" id="actionBtnsWrapper" style="max-height: 120px;">
                 <div style="display:flex; gap:6px; margin-bottom: 6px; margin-top: 2px;">
                     <button class="random-pick-btn" onclick="randomPick(5)">💜 5개 랜덤 뽑기</button>
@@ -105,15 +253,20 @@
                     <span class="btn-text">전체 확인하기</span>
                 </button>
             </div>
+
             <div class="action-toggle-text" id="actionToggleBtn" onclick="toggleActionBtns()">▲</div>
         </div>
-        <div class="collapsible-wrapper" id="gridWrapper" style="max-height: 260px;">
+
+        <div class="collapsible-wrapper" id="gridWrapper" style="max-height: 270px;">
             <div class="grid-container" id="board"></div>
         </div>
+        
         <div class="toggle-bar-horizontal">
             <button class="toggle-btn-horiz" id="gridToggleBtn" onclick="toggleGrid()">▲</button>
         </div>
+
     </div>
+
     <div class="panel-group" id="rightPanel" style="order: 3;">
         <div class="toggle-bar-container" id="adminToggleContainer">
             <button class="toggle-btn" id="adminToggleBtn" onclick="toggleAdminMaster()">＜</button>
@@ -125,53 +278,418 @@
                     <label><span>✨ 방송 UI 투명도</span><span id="opacityVal">100%</span></label>
                     <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="100" oninput="changeOpacity(this.value)">
                 </div>
+
                 <button class="settings-toggle-btn" id="innerSettingsToggle" onclick="toggleInnerSettings()">▲</button>
+                
                 <div class="admin-section-inner" id="innerSettings">
                     <h5>상단 타이틀 설정</h5>
                     <div class="input-group">
-                        <input type="text" id="titleInput" class="input-bar" value="💜50개 뽑기판💜" oninput="updateTitleText()">
+                        <input type="text" id="titleInput" class="input-bar" value="💜50개 뽑기판💜" placeholder="타이틀 문구 입력" oninput="updateTitleText()">
                     </div>
                     <div class="input-group" style="margin-bottom: 4px;">
-                        <input type="file" id="bannerUpload" accept="image/png, image/jpeg, image/gif" class="input-bar">
+                        <input type="file" id="bannerUpload" accept="image/png, image/jpeg, image/gif" class="input-bar" title="PNG 배너 이미지 업로드">
                     </div>
                     <button class="preset-btn title-toggle-btn" id="toggleTitleBtn" onclick="toggleTitleMode()">이미지 배너로 변경하기</button>
+
                     <h5 style="margin-top: 12px;">상품 안내 및 메세지 입력</h5>
                     <div class="input-group">
-                        <input type="text" id="marqueeInput" class="input-bar" placeholder="문구를 입력해 주세요" oninput="updateMarqueeText()">
+                        <input type="text" id="marqueeInput" class="input-bar" value="" placeholder="문구를 입력해 주세요" oninput="updateMarqueeText()">
                     </div>
-                    <h5 style="margin-top: 12px;">당첨 갯수 설정</h5>
+
+                    <h5 style="margin-top: 12px;">당첨 갯수 설정 (최대 100개)</h5>
                     <div class="input-group">
-                        <input type="number" id="winCountInput" class="input-bar" value="5" min="0" max="100">
+                        <input type="number" id="winCountInput" class="input-bar" value="5" min="0" max="100" placeholder="당첨 갯수 (예: 10)">
                     </div>
+                     
                     <button class="shuffle-btn" onclick="shuffleAndReset()" style="margin-top: 5px;">뽑기판 섞고 시작하기</button>
-                    <button class="preset-btn" style="background:#e1d5f2; color:#5d2e7a; border-color:#d7bde2;" onclick="swapPanels()">뽑기판 ⇄ 설정창 좌우 변경</button>
+                    <button class="preset-btn" style="background: linear-gradient(135deg, #f5eef8, #d7bde2); color: #4a235a; border-color: #c39bd3; margin-bottom: 0;" onclick="swapPanels()">뽑기판 ⇄ 설정창 좌우 변경</button>
                 </div> 
-                <div class="answer-grid" id="answerGrid"></div>
+
+                <div class="answer-grid" id="answerGrid">
+                    <div style="text-align: center; color: #9b59b6; font-size: 12px; line-height: 1.4;">위의 셔플 버튼을 누르면<br>당첨 번호 정답지가 출력됩니다.</div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
+
 <script>
-    const board = document.getElementById('board'), adminWrapper = document.getElementById('adminWrapper'), opacityVal = document.getElementById('opacityVal'), answerGrid = document.getElementById('answerGrid'), adminToggleBtn = document.getElementById('adminToggleBtn'), actionBtnsWrapper = document.getElementById('actionBtnsWrapper'), actionToggleBtn = document.getElementById('actionToggleBtn'), gridWrapper = document.getElementById('gridWrapper'), gridToggleBtn = document.getElementById('gridToggleBtn'), statusText = document.getElementById('statusText'), textTitle = document.getElementById('textTitle'), imageTitle = document.getElementById('imageTitle'), toggleTitleBtn = document.getElementById('toggleTitleBtn'), bannerUpload = document.getElementById('bannerUpload'), titleInput = document.getElementById('titleInput'), marqueeText = document.getElementById('marqueeText'), marqueeInput = document.getElementById('marqueeInput');
-    let isImageMode = false, totalSlots = 100, totalWinCount = 0, currentRewards = [], isAnimating = false, isSwapped = false; 
-    const flipSound = new Audio("flip.mp3"), winSound = new Audio("win.mp3");
-    function initAudioUnlock() { const unlock = () => { flipSound.play().then(() => { flipSound.pause(); flipSound.currentTime = 0; }).catch(e => {}); winSound.play().then(() => { winSound.pause(); winSound.currentTime = 0; }).catch(e => {}); document.removeEventListener('click', unlock); }; document.addEventListener('click', unlock); }
-    function toggleInnerSettings() { const inner = document.getElementById('innerSettings'), btn = document.getElementById('innerSettingsToggle'); if (inner.style.display === 'none') { inner.style.display = 'block'; btn.innerText = '▲'; } else { inner.style.display = 'none'; btn.innerText = '▼'; } }
-    function updateTitleText() { textTitle.innerText = titleInput.value || "타이틀을 입력하세요"; }
-    function updateMarqueeText() { marqueeText.innerText = marqueeInput.value || " "; marqueeText.classList.remove('marquee-animate'); void marqueeText.offsetWidth; marqueeText.classList.add('marquee-animate'); }
-    bannerUpload.addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { const url = URL.createObjectURL(file); imageTitle.src = url; if(!isImageMode) toggleTitleMode(); } });
-    function toggleTitleMode() { isImageMode = !isImageMode; textTitle.style.display = isImageMode ? 'none' : 'block'; imageTitle.style.display = isImageMode ? 'block' : 'none'; toggleTitleBtn.innerText = isImageMode ? '텍스트 문구로 변경하기' : '이미지 배너로 변경하기'; }
-    function changeOpacity(val) { document.querySelectorAll('.broadcast-part').forEach(el => el.style.opacity = val / 100); opacityVal.innerText = val + "%"; }
-    function swapPanels() { isSwapped = !isSwapped; const v = document.getElementById('viewColumn'), r = document.getElementById('rightPanel'), m = document.getElementById('mainContainer'); m.classList.toggle('admin-swapped'); v.style.order = isSwapped ? "3" : "1"; r.style.order = isSwapped ? "1" : "3"; updateToggleArrows(); }
-    function updateToggleArrows() { adminToggleBtn.innerText = adminWrapper.classList.contains('collapsed') ? "＞" : "＜"; gridToggleBtn.innerText = gridWrapper.classList.contains('collapsed') ? "▼" : "▲"; }
-    function toggleAdminMaster() { adminWrapper.classList.toggle('collapsed'); updateToggleArrows(); }
-    function toggleGrid() { gridWrapper.classList.toggle('collapsed'); gridToggleBtn.innerText = gridWrapper.classList.contains('collapsed') ? "▼" : "▲"; }
-    function toggleActionBtns() { actionBtnsWrapper.classList.toggle('collapsed'); actionToggleBtn.innerText = actionBtnsWrapper.classList.contains('collapsed') ? "▼" : "▲"; }
-    function updateStatus() { let revealedWins = 0; document.querySelectorAll('.card').forEach((card, index) => { if (card.classList.contains('flipped') && currentRewards[index] === "당첨") revealedWins++; }); statusText.innerText = `${totalWinCount - revealedWins} / ${totalWinCount} 개`; }
-    function shuffleAndReset() { if (isAnimating) return; let winCount = parseInt(document.getElementById('winCountInput').value) || 0; if (winCount < 0) winCount = 0; if (winCount > totalSlots) winCount = totalSlots; totalWinCount = winCount; currentRewards = Array(totalSlots).fill("꽝"); for (let i = 0; i < winCount; i++) currentRewards[i] = "당첨"; for (let i = currentRewards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [currentRewards[i], currentRewards[j]] = [currentRewards[j], currentRewards[i]]; } renderAnswerSheet(); board.innerHTML = ""; for (let i = 1; i <= totalSlots; i++) { const c = document.createElement('div'), card = document.createElement('div'); c.classList.add('card-container'); card.classList.add('card'); card.innerHTML = `<div class="card-face card-front">${i}</div><div class="card-face card-back" style="background:${currentRewards[i-1]==="당첨"?"#9b59b6":"#ededed69"}; color:${currentRewards[i-1]==="당첨"?"#fff":"#5d2e7a"}">${currentRewards[i-1]}</div>`; card.onclick = () => { if (!card.classList.contains('flipped')) { (currentRewards[i-1] === "당첨" ? winSound : flipSound).play(); card.classList.add('flipped'); updateStatus(); } }; c.appendChild(card); board.appendChild(c); } updateStatus(); }
-    function randomPick(count) { if (isAnimating) return; const unFlipped = Array.from(document.querySelectorAll('.card')).filter(c => !c.classList.contains('flipped')); if (unFlipped.length === 0) return; isAnimating = true; unFlipped.sort(() => Math.random() - 0.5).slice(0, count).forEach((c, i) => setTimeout(() => { c.click(); if (i === count - 1 || i === unFlipped.length - 1) isAnimating = false; }, i * 300)); }
-    function triggerMegaFlip() { if (isAnimating) return; const cards = document.querySelectorAll('.card'); if (cards.length > 0 && Array.from(cards).every(c => c.classList.contains('flipped'))) { cards.forEach(c => c.classList.remove('flipped')); updateStatus(); return; } isAnimating = true; cards.forEach(c => { c.classList.add('flipped'); if(currentRewards[Array.from(cards).indexOf(c)] === "당첨") winSound.play().catch(e=>{}); else flipSound.play().catch(e=>{}); updateStatus(); }); isAnimating = false; }
-    function renderAnswerSheet() { answerGrid.innerHTML = ""; const win = currentRewards.map((r, i) => r === "당첨" ? i + 1 : null).filter(v => v !== null); if (win.length > 0) { const d = document.createElement('div'); d.style.textAlign = 'center'; d.innerHTML = `🎯 당첨 번호 (총 ${win.length}개)<br>` + win.map(n => `<span class="ans-num">${n}번</span>`).join(" "); answerGrid.appendChild(d); } }
+    const board = document.getElementById('board');
+    const adminWrapper = document.getElementById('adminWrapper');
+    const opacityVal = document.getElementById('opacityVal');
+    const answerGrid = document.getElementById('answerGrid');
+    
+    // 접기 버튼 변수들
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const actionBtnsWrapper = document.getElementById('actionBtnsWrapper');
+    const actionToggleBtn = document.getElementById('actionToggleBtn');
+    const gridWrapper = document.getElementById('gridWrapper');
+    const gridToggleBtn = document.getElementById('gridToggleBtn');
+
+    const statusText = document.getElementById('statusText');
+    
+    const textTitle = document.getElementById('textTitle');
+    const imageTitle = document.getElementById('imageTitle');
+    const toggleTitleBtn = document.getElementById('toggleTitleBtn');
+    const bannerUpload = document.getElementById('bannerUpload');
+    const titleInput = document.getElementById('titleInput');
+
+    const marqueeText = document.getElementById('marqueeText');
+    const marqueeInput = document.getElementById('marqueeInput');
+    
+    let isImageMode = false;
+    const totalSlots = 100;
+    let totalWinCount = 0;
+    let currentRewards = [];
+    let isAnimating = false;
+    let isSwapped = false; 
+
+    const flipSound = new Audio("flip.mp3");
+    const winSound = new Audio("win.mp3");
+
+    function initAudioUnlock() {
+        const unlock = () => {
+            flipSound.play().then(() => { flipSound.pause(); flipSound.currentTime = 0; }).catch(e => {});
+            winSound.play().then(() => { winSound.pause(); winSound.currentTime = 0; }).catch(e => {});
+            document.removeEventListener('click', unlock);
+        };
+        document.addEventListener('click', unlock);
+    }
+
+    function toggleInnerSettings() {
+        const inner = document.getElementById('innerSettings');
+        const btn = document.getElementById('innerSettingsToggle');
+        if (inner.style.display === 'none') {
+            inner.style.display = 'block';
+            btn.innerText = '▲';
+        } else {
+            inner.style.display = 'none';
+            btn.innerText = '▼';
+        }
+    }
+
+    function updateTitleText() {
+        textTitle.innerText = titleInput.value || "타이틀을 입력하세요";
+    }
+
+    function updateMarqueeText() {
+        marqueeText.innerText = marqueeInput.value || " ";
+        marqueeText.classList.remove('marquee-animate');
+        void marqueeText.offsetWidth; 
+        marqueeText.classList.add('marquee-animate');
+    }
+
+    bannerUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            imageTitle.src = url;
+            if(!isImageMode) {
+                toggleTitleMode();
+            }
+        }
+    });
+
+    function toggleTitleMode() {
+        if (!isImageMode && !imageTitle.src.startsWith('blob')) {
+            alert('먼저 준비된 배너(PNG) 이미지를 업로드해주세요!');
+            return;
+        }
+        
+        isImageMode = !isImageMode;
+        if (isImageMode) {
+            textTitle.style.display = 'none';
+            imageTitle.style.display = 'block';
+            toggleTitleBtn.innerText = '텍스트 문구로 변경하기';
+        } else {
+            textTitle.style.display = 'block';
+            imageTitle.style.display = 'none';
+            toggleTitleBtn.innerText = '이미지 배너로 변경하기';
+        }
+    }
+
+    function changeOpacity(val) {
+        document.querySelectorAll('.broadcast-part').forEach(el => {
+            el.style.opacity = val / 100;
+        });
+        opacityVal.innerText = val + "%";
+    }
+
+    function swapPanels() {
+        isSwapped = !isSwapped;
+        const viewColumn = document.getElementById('viewColumn');
+        const rightPanel = document.getElementById('rightPanel');
+        const mainContainer = document.getElementById('mainContainer');
+
+        if (isSwapped) {
+            mainContainer.classList.add('admin-swapped');
+            viewColumn.style.order = "3";
+            rightPanel.style.order = "1";
+        } else {
+            mainContainer.classList.remove('admin-swapped');
+            viewColumn.style.order = "1";
+            rightPanel.style.order = "3";
+        }
+        updateToggleArrows();
+    }
+
+    function updateToggleArrows() {
+        if (!isSwapped) {
+            adminToggleBtn.innerText = adminWrapper.classList.contains('collapsed') ? "＞" : "＜";
+        } else {
+            adminToggleBtn.innerText = adminWrapper.classList.contains('collapsed') ? "＞" : "＜";
+        }
+        gridToggleBtn.innerText = gridWrapper.classList.contains('collapsed') ? "▼" : "▲";
+    }
+
+    function toggleAdminMaster() {
+        adminWrapper.classList.toggle('collapsed');
+        updateToggleArrows();
+    }
+
+    function toggleGrid() {
+        gridWrapper.classList.toggle('collapsed');
+        updateToggleArrows();
+    }
+
+    function toggleActionBtns() {
+        actionBtnsWrapper.classList.toggle('collapsed');
+        if (actionBtnsWrapper.classList.contains('collapsed')) {
+            actionToggleBtn.innerText = "▼";
+        } else {
+            actionToggleBtn.innerText = "▲";
+        }
+    }
+
+    function updateStatus() {
+        let revealedWins = 0;
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            if (card.classList.contains('flipped') && currentRewards[index] === "당첨") {
+                revealedWins++;
+            }
+        });
+        const remaining = totalWinCount - revealedWins;
+        statusText.innerText = `${remaining} / ${totalWinCount} 개`;
+    }
+
+    function shuffleAndReset() {
+        if (isAnimating) return;
+        
+        let winCount = parseInt(document.getElementById('winCountInput').value) || 0;
+        if (winCount < 0) winCount = 0;
+        if (winCount > totalSlots) winCount = totalSlots;
+        document.getElementById('winCountInput').value = winCount; 
+        
+        totalWinCount = winCount;
+
+        currentRewards = Array(totalSlots).fill("꽝");
+        for (let i = 0; i < winCount; i++) {
+            currentRewards[i] = "당첨";
+        }
+        
+        for (let i = currentRewards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [currentRewards[i], currentRewards[j]] = [currentRewards[j], currentRewards[i]];
+        }
+        
+        renderAnswerSheet();
+        
+        board.innerHTML = "";
+        for (let i = 1; i <= totalSlots; i++) {
+            const cardContainer = document.createElement('div');
+            cardContainer.classList.add('card-container');
+            cardContainer.setAttribute('data-index', i);
+            const card = document.createElement('div');
+            card.classList.add('card');
+            
+            const cardFront = document.createElement('div');
+            cardFront.classList.add('card-face', 'card-front');
+            cardFront.innerText = i;
+            
+            const cardBack = document.createElement('div');
+            cardBack.classList.add('card-face', 'card-back');
+            const resultText = currentRewards[i - 1];
+            cardBack.innerText = resultText;
+            
+            if (resultText === "당첨") {
+                cardBack.style.background = "#9b59b6"; 
+                cardBack.style.borderColor = "#6c3483"; 
+                cardBack.style.color = "#FFFFFF"; 
+                cardBack.style.fontWeight = "bold";
+            } else {
+                cardBack.style.background = "#d9d9d980"; 
+                cardBack.style.borderColor = "rgba(255, 255, 255, 0.8)"; 
+                cardBack.style.color = "#4a235a";
+            }
+            
+            card.appendChild(cardFront);
+            card.appendChild(cardBack);
+            cardContainer.appendChild(card);
+            
+            cardContainer.addEventListener('click', () => {
+                if (isAnimating) return;
+                
+                if (!card.classList.contains('flipped')) {
+                    if (resultText === "당첨") { winSound.currentTime = 0; winSound.play().catch(e=>{}); }
+                    else { flipSound.currentTime = 0; flipSound.play().catch(e=>{}); }
+                    card.classList.add('flipped');
+                } 
+                else {
+                    flipSound.currentTime = 0; flipSound.play().catch(e=>{});
+                    card.classList.remove('flipped');
+                }
+                
+                updateStatus();
+            });
+            board.appendChild(cardContainer);
+        }
+        updateStatus(); 
+    }
+
+    function randomPick(count) {
+        if (isAnimating) return;
+        const unFlippedCards = [];
+        
+        document.querySelectorAll('.card-container').forEach((container, index) => {
+            const card = container.querySelector('.card');
+            if (!card.classList.contains('flipped')) {
+                unFlippedCards.push({ card: card, result: currentRewards[index] });
+            }
+        });
+
+        if (unFlippedCards.length === 0) return;
+
+        for (let i = unFlippedCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [unFlippedCards[i], unFlippedCards[j]] = [unFlippedCards[j], unFlippedCards[i]];
+        }
+
+        const cardsToFlip = unFlippedCards.slice(0, count);
+        isAnimating = true;
+
+        cardsToFlip.forEach((item, i) => {
+            setTimeout(() => {
+                item.card.classList.add('flipped');
+                if (item.result === "당첨") {
+                    winSound.currentTime = 0; winSound.play().catch(e=>{});
+                } else {
+                    flipSound.currentTime = 0; flipSound.play().catch(e=>{});
+                }
+                updateStatus(); 
+                
+                if (i === cardsToFlip.length - 1) {
+                    isAnimating = false;
+                }
+            }, i * 300); 
+        });
+    }
+
+    function generateSpiralOrder() {
+        let spiral = [];
+        let top = 0, bottom = 9, left = 0, right = 9;
+        while (top <= bottom && left <= right) {
+            for (let i = left; i <= right; i++) spiral.push({row: top, col: i});
+            top++;
+            for (let i = top; i <= bottom; i++) spiral.push({row: i, col: right});
+            right--;
+            if (top <= bottom) {
+                for (let i = right; i >= left; i--) spiral.push({row: bottom, col: i});
+                bottom--;
+            }
+            if (left <= right) {
+                for (let i = bottom; i >= top; i--) spiral.push({row: i, col: left});
+                left++;
+            }
+        }
+        return spiral;
+    }
+
+    function triggerMegaFlip() {
+        if (isAnimating) return;
+        const cards = document.querySelectorAll('.card');
+        let hasUnflipped = false;
+        cards.forEach(card => { if (!card.classList.contains('flipped')) hasUnflipped = true; });
+        
+        if (!hasUnflipped) {
+            flipSound.currentTime = 0; flipSound.play().catch(e=>{});
+            cards.forEach(card => card.classList.remove('flipped'));
+            setTimeout(updateStatus, 600); 
+            return;
+        }
+        
+        isAnimating = true;
+        cards.forEach(card => card.classList.add('slot-glow'));
+        winSound.currentTime = 0;
+        winSound.play().catch(e=>{});
+        
+        setTimeout(() => {
+            cards.forEach(card => card.classList.remove('slot-glow'));
+            const spiralSequence = generateSpiralOrder();
+            spiralSequence.forEach((pos, seqIndex) => {
+                const targetBoardIndex = (pos.row * 10) + pos.col + 1;
+                const targetCardContainer = board.querySelector(`.card-container[data-index="${targetBoardIndex}"]`);
+                if (targetCardContainer) {
+                    const card = targetCardContainer.querySelector('.card');
+                    setTimeout(() => {
+                        if (!card.classList.contains('flipped')) {
+                            card.classList.add('flipped');
+                            if (seqIndex % 3 === 0) {
+                                flipSound.currentTime = 0;
+                                flipSound.play().catch(e=>{});
+                            }
+                            updateStatus(); 
+                        }
+                    }, seqIndex * 25);
+                }
+            });
+            setTimeout(() => { isAnimating = false; }, 2600);
+        }, 1200);
+    }
+
+    function renderAnswerSheet() {
+        answerGrid.innerHTML = "";
+        let winningNumbers = [];
+        
+        currentRewards.forEach((reward, index) => {
+            if (reward === "당첨") {
+                winningNumbers.push(index + 1);
+            }
+        });
+
+        if (winningNumbers.length === 0) {
+            answerGrid.innerHTML = "<div style='text-align: center; color: #5e35b1; font-size: 12px; line-height: 1.4;'>설정된 당첨이 없습니다.</div>";
+        } else {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.flexWrap = 'wrap';
+            row.style.justifyContent = 'center';
+            row.style.padding = '10px';
+            row.style.background = 'rgba(244, 236, 247, 0.9)';
+            row.style.borderRadius = '6px';
+            row.style.border = '1px solid #d7bde2';
+
+            const title = document.createElement('div');
+            title.style.width = '100%';
+            title.style.textAlign = 'center';
+            title.style.marginBottom = '6px';
+            title.style.fontWeight = 'bold';
+            title.style.color = '#6c3483';
+            title.innerText = `🎯 당첨 번호 (총 ${winningNumbers.length}개)`;
+            row.appendChild(title);
+
+            winningNumbers.forEach(num => {
+                const badge = document.createElement('span');
+                badge.classList.add('ans-num');
+                badge.innerText = `${num}번`;
+                row.appendChild(badge);
+            });
+
+            answerGrid.appendChild(row);
+        }
+    }
+
     window.onload = function() { initAudioUnlock(); shuffleAndReset(); }
 </script>
 </body>
